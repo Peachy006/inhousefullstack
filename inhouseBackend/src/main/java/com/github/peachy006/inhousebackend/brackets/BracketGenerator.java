@@ -45,23 +45,30 @@ public class BracketGenerator{
         List<Integer> sizes = new ArrayList<>();
 
         while (userCount > 0) {
-
             if (userCount >= 4 && userCount <= 6) {
                 sizes.add(userCount);
+                userCount = 0;
                 break;
             }
 
-            int remainder = userCount - 5;
-
-            if (remainder == 0 || remainder >= 4 && remainder != 7) {
+            int after5 = userCount - 5;
+            if (after5 >= 8 || after5 == 4 || after5 == 5 || after5 == 6 || after5 == 0) {
                 sizes.add(5);
                 userCount -= 5;
-            } else {
+            }
+            else if (userCount - 6 >= 8 || userCount - 6 == 4 || userCount - 6 == 5 || userCount - 6 == 6 || userCount - 6 == 0) {
                 sizes.add(6);
                 userCount -= 6;
             }
+            else if (userCount >= 4) {
+                sizes.add(4);
+                userCount -= 4;
+            }
+            else {
+                sizes.add(userCount);
+                userCount = 0;
+            }
         }
-
         return sizes;
     }
 
