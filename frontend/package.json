@@ -1,0 +1,30 @@
+{
+  "name": "inhouse",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "docker build --target dev -t inhouse . && docker run -p 3001:3000 -v $(pwd)/src:/app/src inhouse",
+    "dev:win": "docker build --target dev -t inhouse . && docker run -p 3001:3000 -v %cd%/src:/app/src inhouse",
+    "prod": "docker build --target prod -t inhouse-prod . && docker run -p 3000:3000 inhouse-prod",
+    "dev:local": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
