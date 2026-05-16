@@ -5,19 +5,6 @@ import { useRouter } from "next/navigation";
 
 const RANKS = ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Challenger"];
 
-interface Match {
-    id: string;
-    red: string;
-    blue: string;
-}
-
-interface Bracket {
-    id: string;
-    name: string;
-    fighters: string[];
-    matches: Match[];
-}
-
 interface FighterRow {
     uid: string;
     name: string;
@@ -35,35 +22,6 @@ function emptyFighter(): FighterRow {
     return { uid: makeUid(), name: "", rank: "Iron", weight: "", age: "", boy: true };
 }
 
-function shuffleNoConsecutive(matches: Match[]): Match[] {
-    const arr = [...matches];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    for (let i = 1; i < arr.length; i++) {
-        const prev = arr[i - 1];
-        const sharesFighter = (m: Match) =>
-            m.red === prev.red || m.red === prev.blue ||
-            m.blue === prev.red || m.blue === prev.blue;
-        if (sharesFighter(arr[i])) {
-            const swapIdx = arr.findIndex((m, idx) => idx > i && !sharesFighter(m));
-            if (swapIdx !== -1) [arr[i], arr[swapIdx]] = [arr[swapIdx], arr[i]];
-        }
-    }
-    return arr;
-}
-
-function generateRoundRobin(bracketId: string, fighters: string[]): Match[] {
-    const matches: Match[] = [];
-    for (let i = 0; i < fighters.length; i++) {
-        for (let j = i + 1; j < fighters.length; j++) {
-            matches.push({ id: `${bracketId}_${i}_${j}`, red: fighters[i], blue: fighters[j] });
-        }
-    }
-    return shuffleNoConsecutive(matches);
-}
-
 export default function SetupPage() {
     const router = useRouter();
     const [ready, setReady] = useState(false);
@@ -76,6 +34,8 @@ export default function SetupPage() {
     useEffect(() => {
         if (localStorage.getItem("brackets")) {
             router.replace("/fightorder");
+        } else if (localStorage.getItem("pendingBrackets")) {
+            router.replace("/review");
         } else {
             setReady(true);
         }
@@ -123,19 +83,14 @@ export default function SetupPage() {
 
             const data: Array<{ users: Array<{ name: string }> }> = await res.json();
 
-            const brackets: Bracket[] = data.map((b, i) => {
-                const id = `b${i + 1}`;
-                const names = b.users.map(u => u.name);
-                return {
-                    id,
-                    name: `Bracket ${i + 1}`,
-                    fighters: names,
-                    matches: generateRoundRobin(id, names),
-                };
-            });
+            const pending = data.map((b, i) => ({
+                id: `b${i + 1}`,
+                name: `Bracket ${i + 1}`,
+                fighters: b.users.map(u => u.name),
+            }));
 
-            localStorage.setItem("brackets", JSON.stringify(brackets));
-            router.push("/fightorder");
+            localStorage.setItem("pendingBrackets", JSON.stringify(pending));
+            router.push("/review");
         } catch (e) {
             setError(e instanceof Error ? e.message : "Failed to reach backend. Is the Spring Boot server running?");
             setLoading(false);

@@ -162,6 +162,7 @@ export default function FightOrder() {
                     <button
                         onClick={() => {
                             localStorage.removeItem("brackets");
+                            localStorage.removeItem("pendingBrackets");
                             router.push("/");
                         }}
                         className="bg-white/10 hover:bg-white/15 text-white text-[10px] tracking-widest px-4 py-2 rounded border border-white/10 transition-colors"
