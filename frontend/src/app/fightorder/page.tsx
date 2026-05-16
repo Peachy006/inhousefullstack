@@ -161,6 +161,15 @@ export default function FightOrder() {
                     />
                     <button
                         onClick={() => {
+                            localStorage.removeItem("brackets");
+                            router.push("/");
+                        }}
+                        className="bg-white/10 hover:bg-white/15 text-white text-[10px] tracking-widest px-4 py-2 rounded border border-white/10 transition-colors"
+                    >
+                        NEW SESSION
+                    </button>
+                    <button
+                        onClick={() => {
                             fetch("/brackets.json")
                                 .then((r) => {
                                     if (!r.ok) throw new Error();

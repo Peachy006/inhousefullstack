@@ -3,18 +3,28 @@ package com.github.peachy006.inhousebackend.user;
 import java.util.Objects;
 
 public class User implements Comparable<User>{
+    String name;
     String rank;
     double weight;
     int age;
-    boolean isBoy;
+    boolean boy;
 
     public User() {}
 
-    public User(String rank, double weight, int age, boolean isBoy) {
+    public User(String name, String rank, double weight, int age, boolean boy) {
+        this.name = name;
         this.rank = rank;
         this.weight = weight;
         this.age = age;
-        this.isBoy = isBoy;
+        this.boy = boy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRank() {
@@ -42,16 +52,16 @@ public class User implements Comparable<User>{
     }
 
     public boolean isBoy() {
-        return isBoy;
+        return boy;
     }
 
     public void setBoy(boolean boy) {
-        isBoy = boy;
+        this.boy = boy;
     }
 
     @Override
     public String toString() {
-        return rank + " | age=" + age + " | weight=" + weight + " | " + (isBoy ? "M" : "F");
+        return name + " | " + rank + " | age=" + age + " | weight=" + weight + " | " + (boy ? "M" : "F");
     }
 
     @Override
@@ -65,13 +75,14 @@ public class User implements Comparable<User>{
         if (!(o instanceof User)) return false;
         User other = (User) o;
         return age == other.age
-            && isBoy == other.isBoy
+            && boy == other.boy
             && Double.compare(weight, other.weight) == 0
+            && Objects.equals(name, other.name)
             && Objects.equals(rank, other.rank);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rank, weight, age, isBoy);
+        return Objects.hash(name, rank, weight, age, boy);
     }
 }
