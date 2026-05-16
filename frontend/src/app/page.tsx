@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const RANKS = ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Challenger"];
+const RANKS = ["white", "grey", "yellow", "orange", "green"];
 
 interface FighterRow {
     uid: string;
@@ -19,7 +19,7 @@ function makeUid(): string {
 }
 
 function emptyFighter(): FighterRow {
-    return { uid: makeUid(), name: "", rank: "Iron", weight: "", age: "", boy: true };
+    return { uid: makeUid(), name: "", rank: "white", weight: "", age: "", boy: true };
 }
 
 export default function SetupPage() {
@@ -135,7 +135,7 @@ export default function SetupPage() {
                                 onChange={e => update(f.uid, "rank", e.target.value)}
                                 className="bg-[#1e1e1e] border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-white/30"
                             >
-                                {RANKS.map(r => <option key={r} value={r}>{r}</option>)}
+                                {RANKS.map(r => <option key={r} value={r}>{r.split('')[0].toUpperCase() + r.slice(1)}</option>)}
                             </select>
                             <input
                                 type="number"

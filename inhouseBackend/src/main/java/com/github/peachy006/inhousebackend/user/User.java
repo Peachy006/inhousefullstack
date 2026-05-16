@@ -66,7 +66,27 @@ public class User implements Comparable<User>{
 
     @Override
     public int compareTo(User other) {
-        return Integer.compare(this.age, other.age);
+        return Double.compare(this.score(), other.score());
+    }
+
+    private double score() {
+        double s = 0;
+        s += rankValue() * 10;
+        s += age * 5;
+        s += weight;
+        if (boy) s += 3;
+        return s;
+    }
+
+    private int rankValue() {
+        switch (rank) {
+            case "white":  return 0;
+            case "grey":   return 1;
+            case "yellow": return 2;
+            case "orange": return 3;
+            case "green":  return 4;
+            default:       return 0;
+        }
     }
 
     @Override
