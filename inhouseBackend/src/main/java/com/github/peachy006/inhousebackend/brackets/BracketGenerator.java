@@ -9,6 +9,10 @@ import java.util.*;
 public class BracketGenerator{
 
     public List<Bracket> generateBrackets(List<User> users) {
+        List<User> sorted = new ArrayList<>(users);
+        Collections.sort(sorted);
+        users = sorted;
+
         int totalUsers = users.size();
 
         List<Integer> brackets = getBracketSizes(totalUsers);

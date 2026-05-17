@@ -56,10 +56,10 @@ export default function SetupPage() {
 
         for (const f of fighters) {
             if (!f.name.trim()) { setError("All fighters must have a name."); return; }
-            const w = parseFloat(f.weight);
-            if (isNaN(w) || w <= 0) { setError(`"${f.name || "A fighter"}" has an invalid weight.`); return; }
-            const a = parseInt(f.age);
-            if (isNaN(a) || a <= 0) { setError(`"${f.name || "A fighter"}" has an invalid age.`); return; }
+            let w = parseFloat(f.weight);
+            if (isNaN(w) || w <= 0) { w = 0 }
+            let a = parseInt(f.age);
+            if (isNaN(a) || a <= 0) { a = 1 }
         }
         if (fighters.length < 4) { setError("At least 4 fighters are required to generate brackets."); return; }
 

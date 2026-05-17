@@ -190,12 +190,6 @@ export default function ReviewPage() {
                 </div>
             </div>
 
-            {hasWarning && (
-                <div className="mx-6 mt-4 text-yellow-400 text-[11px] tracking-wider border border-yellow-900/50 bg-yellow-900/10 rounded px-4 py-3">
-                    One or more brackets have fewer than 4 fighters — consider adjusting before confirming.
-                </div>
-            )}
-
             {/* Add Fighter Modal */}
             {showAddFighter && (
                 <div
