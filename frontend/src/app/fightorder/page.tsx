@@ -25,15 +25,12 @@ interface MatchResult {
 }
 
 function shuffleNoConsecutive(matches: Match[]): Match[] {
-    // Fisher-Yates shuffle
     const arr = [...matches];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 
-    // Greedy pass: if consecutive matches share a fighter, swap with the
-    // earliest later match that doesn't conflict with the previous match
     for (let i = 1; i < arr.length; i++) {
         const prev = arr[i - 1];
         const sharesFighter = (m: Match) =>
@@ -45,7 +42,6 @@ function shuffleNoConsecutive(matches: Match[]): Match[] {
             if (swapIdx !== -1) {
                 [arr[i], arr[swapIdx]] = [arr[swapIdx], arr[i]];
             }
-            // if no valid swap exists (unavoidable conflict), leave it in place
         }
     }
 
@@ -99,7 +95,6 @@ export default function FightOrder() {
             return;
         }
 
-        // Auto-load from public/brackets.json
         fetch("/brackets.json")
             .then((r) => {
                 if (!r.ok) throw new Error();
@@ -110,7 +105,7 @@ export default function FightOrder() {
                 setBrackets(parsed);
                 localStorage.setItem("brackets", JSON.stringify(parsed));
             })
-            .catch(() => {/* no file found, show empty state */});
+            .catch(() => {});
     }, []);
 
     const handleFile = (file: File) => {
@@ -145,7 +140,6 @@ export default function FightOrder() {
 
     return (
         <div className="min-h-screen w-screen bg-[#2c2c2c] flex flex-col font-mono select-none">
-            {/* Header */}
             <div className="px-8 py-5 border-b border-white/10 bg-[#222] flex items-center justify-between">
                 <h1 className="text-white font-black text-xl tracking-[0.3em]">FIGHT ORDER</h1>
                 <div className="flex items-center gap-3">
@@ -201,7 +195,6 @@ export default function FightOrder() {
                 </div>
             </div>
 
-            {/* Empty state */}
             {brackets.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-6 text-center px-8">
                     <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center">
@@ -251,7 +244,6 @@ export default function FightOrder() {
                                 key={bracket.id}
                                 className="border border-white/10 rounded-lg overflow-hidden"
                             >
-                                {/* Bracket header */}
                                 <button
                                     onClick={() => toggleBracket(bracket.id)}
                                     className="w-full flex items-center justify-between px-6 py-4 bg-[#1e1e1e] hover:bg-[#252525] transition-colors"
@@ -295,7 +287,6 @@ export default function FightOrder() {
                                     </div>
                                 </button>
 
-                                {/* Match list */}
                                 {isOpen && (
                                     <div className="divide-y divide-white/5">
                                         {bracket.matches.map((match) => {

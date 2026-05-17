@@ -95,7 +95,6 @@ export default function SetupPage() {
 
     return (
         <div className="min-h-screen w-screen bg-[#2c2c2c] flex flex-col font-mono select-none">
-            {/* Header */}
             <div className="px-8 py-5 border-b border-white/10 bg-[#222] flex items-center justify-between">
                 <h1 className="text-white font-black text-xl tracking-[0.3em]">FIGHTER SETUP</h1>
                 <span className="text-white/30 text-[10px] tracking-widest">
@@ -104,14 +103,12 @@ export default function SetupPage() {
             </div>
 
             <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full px-6 py-6 gap-4">
-                {/* Column headers */}
                 <div className="grid gap-3 px-1" style={{ gridTemplateColumns: "2fr 1.4fr 0.9fr 0.7fr 90px 36px" }}>
                     {["NAME", "RANK", "WEIGHT (lbs)", "AGE", "GENDER", ""].map((h, i) => (
                         <span key={i} className="text-white/25 text-[9px] tracking-widest font-bold">{h}</span>
                     ))}
                 </div>
 
-                {/* Fighter rows */}
                 <div className="flex flex-col gap-2">
                     {fighters.map((f) => (
                         <div

@@ -187,9 +187,7 @@ function MatchContent() {
             )}
 
             <div className="flex flex-1">
-                {/* Left panel */}
                 <div className="flex-1 flex flex-col">
-                    {/* Red fighter */}
                     <div className="flex-1 flex flex-col justify-center px-10 py-8 border-b border-white/10 bg-[#2c2c2c]">
                         <span
                             className="text-white font-black tracking-wider leading-none"
@@ -232,7 +230,6 @@ function MatchContent() {
                         </div>
                     </div>
 
-                    {/* Blue fighter */}
                     <div className="flex-1 flex flex-col justify-center px-10 py-8 bg-[#303030]">
                         <span
                             className="text-white font-black tracking-wider leading-none"
@@ -276,7 +273,6 @@ function MatchContent() {
                     </div>
                 </div>
 
-                {/* Right score panel */}
                 <div className="flex flex-col w-72">
                     <div className="flex-1 flex items-center justify-center bg-[#8b0000]">
                         <span className="text-white font-black text-[130px] leading-none tabular-nums">
@@ -291,7 +287,6 @@ function MatchContent() {
                 </div>
             </div>
 
-            {/* Bottom bar */}
             <div className="bg-[#222] border-t border-white/10 flex items-center justify-between px-6 py-3 gap-6">
                 <div className="flex items-center gap-4 shrink-0">
                     <div className="bg-white text-black font-black text-base px-4 py-2 rounded tracking-wider">

@@ -154,7 +154,6 @@ export default function ReviewPage() {
 
     return (
         <div className="min-h-screen w-screen bg-[#2c2c2c] flex flex-col font-mono select-none">
-            {/* Header */}
             <div className="px-8 py-5 border-b border-white/10 bg-[#222] flex items-center justify-between gap-6">
                 <div>
                     <h1 className="text-white font-black text-xl tracking-[0.3em]">BRACKET REVIEW</h1>
@@ -190,7 +189,6 @@ export default function ReviewPage() {
                 </div>
             </div>
 
-            {/* Add Fighter Modal */}
             {showAddFighter && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
@@ -232,7 +230,6 @@ export default function ReviewPage() {
                 </div>
             )}
 
-            {/* Bracket cards */}
             <div className="flex-1 p-6 flex flex-wrap gap-4 items-start content-start">
                 {brackets.map(b => {
                     const isDropTarget = dragOverId === b.id && dragging?.fromId !== b.id;
@@ -253,7 +250,6 @@ export default function ReviewPage() {
                             onDragLeave={() => handleDragLeave(b.id)}
                             onDrop={() => handleDrop(b.id)}
                         >
-                            {/* Card header */}
                             <div className="px-4 py-3 bg-[#222] border-b border-white/10 flex items-center justify-between gap-2 min-h-[44px]">
                                 {editingId === b.id ? (
                                     <input
@@ -290,7 +286,6 @@ export default function ReviewPage() {
                                 </div>
                             </div>
 
-                            {/* Fighter list */}
                             <div className="flex flex-col divide-y divide-white/5 min-h-[56px]">
                                 {count === 0 ? (
                                     <div className="flex-1 flex items-center justify-center py-5 text-white/15 text-[10px] tracking-widest">
