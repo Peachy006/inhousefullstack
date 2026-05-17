@@ -68,10 +68,14 @@ function generateRoundRobin(bracketId: string, fighters: string[]): Match[] {
 
 function parseJSON(text: string): Bracket[] {
     const data = JSON.parse(text);
-    return data.brackets.map((b: { id: string; name: string; fighters: string[] }) => ({
-        ...b,
-        matches: generateRoundRobin(b.id, b.fighters),
-    }));
+    return data.brackets.map((b: { id: string; name: string; fighters?: string[] | null }) => {
+        const fighters: string[] = Array.isArray(b.fighters) ? b.fighters : [];
+        return {
+            ...b,
+            fighters,
+            matches: generateRoundRobin(b.id, fighters),
+        };
+    });
 }
 
 
@@ -239,7 +243,7 @@ export default function FightOrder() {
                         const doneCount = bracket.matches.filter(
                             (m) => finishedMatches[m.id]?.finished
                         ).length;
-                        const allDone = doneCount === bracket.matches.length;
+                        const allDone = bracket.matches.length > 0 && doneCount === bracket.matches.length;
                         const someDone = doneCount > 0 && !allDone;
 
                         return (
