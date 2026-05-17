@@ -54,12 +54,16 @@ export default function ReviewPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [dragging, setDragging] = useState<{ fighter: string; fromId: string } | null>(null);
     const [dragOverId, setDragOverId] = useState<string | null>(null);
+    const [showAddFighter, setShowAddFighter] = useState(false);
+    const [newFighterName, setNewFighterName] = useState("");
+    const [loaded, setLoaded] = useState(false);
     const dragCounters = useRef<Record<string, number>>({});
 
     useEffect(() => {
         const pending = localStorage.getItem("pendingBrackets");
         if (pending) {
             setBrackets(JSON.parse(pending));
+            setLoaded(true);
         } else if (localStorage.getItem("brackets")) {
             router.replace("/fightorder");
         } else {
@@ -67,7 +71,13 @@ export default function ReviewPage() {
         }
     }, [router]);
 
-    if (brackets.length === 0) return null;
+    useEffect(() => {
+        if (loaded) {
+            localStorage.setItem("pendingBrackets", JSON.stringify(brackets));
+        }
+    }, [brackets, loaded]);
+
+    if (!loaded) return null;
 
     const moveFighter = (fighter: string, fromId: string, toId: string) => {
         if (fromId === toId) return;
@@ -124,6 +134,21 @@ export default function ReviewPage() {
         router.push("/");
     };
 
+    const handleAddEmptyBracket = () => {
+        const newId = `bracket_custom_${Date.now()}`;
+        setBrackets(prev => [...prev, { id: newId, name: `Bracket ${prev.length + 1}`, fighters: [] }]);
+    };
+
+    const handleAddFighter = () => {
+        const name = newFighterName.trim();
+        if (!name || brackets.length === 0) return;
+        setBrackets(prev => prev.map((b, i) =>
+            i === 0 ? { ...b, fighters: [...b.fighters, name] } : b
+        ));
+        setNewFighterName("");
+        setShowAddFighter(false);
+    };
+
     const totalFighters = brackets.reduce((sum, b) => sum + b.fighters.length, 0);
     const hasWarning = brackets.some(b => b.fighters.length > 0 && b.fighters.length < 4);
 
@@ -145,6 +170,18 @@ export default function ReviewPage() {
                         BACK TO SETUP
                     </button>
                     <button
+                        onClick={handleAddEmptyBracket}
+                        className="bg-white/10 hover:bg-white/15 text-white text-[10px] tracking-widest px-4 py-2 rounded border border-white/10 transition-colors"
+                    >
+                        + EMPTY BRACKET
+                    </button>
+                    <button
+                        onClick={() => setShowAddFighter(true)}
+                        className="bg-white/10 hover:bg-white/15 text-white text-[10px] tracking-widest px-4 py-2 rounded border border-white/10 transition-colors"
+                    >
+                        + ADD FIGHTER
+                    </button>
+                    <button
                         onClick={handleConfirm}
                         className="bg-[#2979ff] hover:bg-[#1a5fd4] text-white font-black text-[11px] tracking-[0.2em] px-6 py-2 rounded transition-colors"
                     >
@@ -156,6 +193,48 @@ export default function ReviewPage() {
             {hasWarning && (
                 <div className="mx-6 mt-4 text-yellow-400 text-[11px] tracking-wider border border-yellow-900/50 bg-yellow-900/10 rounded px-4 py-3">
                     One or more brackets have fewer than 4 fighters — consider adjusting before confirming.
+                </div>
+            )}
+
+            {/* Add Fighter Modal */}
+            {showAddFighter && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+                    onClick={() => setShowAddFighter(false)}
+                >
+                    <div
+                        className="bg-[#1e1e1e] border border-white/10 rounded-lg p-6 w-full max-w-sm flex flex-col gap-4"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <h2 className="text-white font-black text-[13px] tracking-[0.25em]">ADD FIGHTER</h2>
+                        <p className="text-white/30 text-[10px] tracking-wider">
+                            Fighter will be added to <span className="text-white/60">{brackets[0]?.name}</span>
+                        </p>
+                        <input
+                            autoFocus
+                            type="text"
+                            placeholder="Fighter name"
+                            value={newFighterName}
+                            onChange={e => setNewFighterName(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") handleAddFighter(); if (e.key === "Escape") setShowAddFighter(false); }}
+                            className="bg-[#2c2c2c] border border-white/15 text-white text-sm px-3 py-2 rounded focus:outline-none focus:border-white/40 placeholder-white/20"
+                        />
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={() => setShowAddFighter(false)}
+                                className="bg-white/10 hover:bg-white/15 text-white text-[10px] tracking-widest px-4 py-2 rounded border border-white/10 transition-colors"
+                            >
+                                CANCEL
+                            </button>
+                            <button
+                                onClick={handleAddFighter}
+                                disabled={!newFighterName.trim()}
+                                className="bg-[#2979ff] hover:bg-[#1a5fd4] disabled:opacity-30 disabled:cursor-not-allowed text-white font-black text-[10px] tracking-[0.2em] px-5 py-2 rounded transition-colors"
+                            >
+                                ADD
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -204,9 +283,17 @@ export default function ReviewPage() {
                                         {b.name}
                                     </button>
                                 )}
-                                <span className={`text-[9px] tracking-widest font-bold flex-shrink-0 ${tooFew ? "text-yellow-400" : "text-white/25"}`}>
-                                    {count} fighter{count !== 1 ? "s" : ""}{tooFew ? " ⚠" : ""}
-                                </span>
+                                <div className="flex items-center gap-2 flex-shrink-0">
+                                    <span className={`text-[9px] tracking-widest font-bold ${tooFew ? "text-yellow-400" : "text-white/25"}`}>
+                                        {count} fighter{count !== 1 ? "s" : ""}{tooFew ? " ⚠" : ""}
+                                    </span>
+                                    <button
+                                        onClick={() => setBrackets(prev => prev.filter(x => x.id !== b.id))}
+                                        className="text-white/20 hover:text-red-400 text-xl font-bold transition-colors leading-none"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Fighter list */}
@@ -230,9 +317,21 @@ export default function ReviewPage() {
                                                 }`}
                                             >
                                                 <span className="text-white/20 text-xs pointer-events-none">⠿</span>
-                                                <span className="text-white text-sm font-medium pointer-events-none">
+                                                <span className="text-white text-sm font-medium pointer-events-none flex-1">
                                                     {fighter}
                                                 </span>
+                                                <button
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        setBrackets(prev => prev.map(x =>
+                                                            x.id === b.id ? { ...x, fighters: x.fighters.filter(f => f !== fighter) } : x
+                                                        ));
+                                                    }}
+                                                    onMouseDown={e => e.stopPropagation()}
+                                                    className="text-white/20 hover:text-red-400 text-xl font-bold transition-colors leading-none cursor-pointer"
+                                                >
+                                                    ×
+                                                </button>
                                             </div>
                                         );
                                     })
