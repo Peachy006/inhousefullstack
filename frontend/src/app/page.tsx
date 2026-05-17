@@ -56,22 +56,18 @@ export default function SetupPage() {
 
         for (const f of fighters) {
             if (!f.name.trim()) { setError("All fighters must have a name."); return; }
-            let w = parseFloat(f.weight);
-            if (isNaN(w) || w <= 0) { w = 0 }
-            let a = parseInt(f.age);
-            if (isNaN(a) || a <= 0) { a = 1 }
         }
         if (fighters.length < 4) { setError("At least 4 fighters are required to generate brackets."); return; }
 
         setLoading(true);
         try {
-            const payload = fighters.map(f => ({
-                name: f.name.trim(),
-                rank: f.rank,
-                weight: parseFloat(f.weight),
-                age: parseInt(f.age),
-                boy: f.boy,
-            }));
+            const payload = fighters.map(f => {
+                let w = parseFloat(f.weight);
+                if (isNaN(w) || w <= 0) w = 0;
+                let a = parseInt(f.age);
+                if (isNaN(a) || a <= 0) a = 1;
+                return { name: f.name.trim(), rank: f.rank, weight: w, age: a, boy: f.boy };
+            });
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080"}/api/brackets`, {
                 method: "POST",
