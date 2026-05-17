@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = {"http://localhost:3001", "${ALLOWED_ORIGIN:}"})
 public class App {
 
     private final BracketGenerator bracketGenerator = new BracketGenerator();
